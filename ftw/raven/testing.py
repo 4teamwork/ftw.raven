@@ -14,7 +14,7 @@ class RavenLayer(PloneSandboxLayer):
             '  <include package="z3c.autoinclude" file="meta.zcml" />'
             '  <includePlugins package="plone" />'
             '  <includePluginsOverrides package="plone" />'
-            '  <include package="ftw.raven.tests" />'
+            '  <include package="ftw.raven.demo" />'
             '</configure>',
             context=configurationContext)
 
