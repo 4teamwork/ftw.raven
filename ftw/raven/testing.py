@@ -1,11 +1,11 @@
+from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from plone.app.testing import FunctionalTesting
-from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from zope.configuration import xmlconfig
 
 
 class RavenLayer(PloneSandboxLayer):
-    defaultBases = (PLONE_FIXTURE, )
+    defaultBases = (COMPONENT_REGISTRY_ISOLATION, )
 
     def setUpZope(self, app, configurationContext):
         xmlconfig.string(

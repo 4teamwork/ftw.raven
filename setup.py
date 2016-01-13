@@ -4,6 +4,7 @@ import os
 version = '1.0.1.dev0'
 
 tests_require = [
+    'ftw.testing',
     'plone.app.testing',
     'unittest2',
 ]
@@ -36,7 +37,9 @@ setup(name='ftw.raven',
       include_package_data=True,
       zip_safe=False,
 
+
       install_requires=[
+          'raven',
           'Plone',
           'setuptools',
       ],
