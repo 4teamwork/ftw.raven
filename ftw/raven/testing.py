@@ -1,6 +1,7 @@
 from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
+from plone.testing import z2
 from zope.configuration import xmlconfig
 
 
@@ -13,8 +14,11 @@ class RavenLayer(PloneSandboxLayer):
             '  <include package="z3c.autoinclude" file="meta.zcml" />'
             '  <includePlugins package="plone" />'
             '  <includePluginsOverrides package="plone" />'
+            '  <include package="ftw.raven.tests" />'
             '</configure>',
             context=configurationContext)
+
+        z2.installProduct(app, 'plone.app.linkintegrity')
 
 
 RAVEN_FIXTURE = RavenLayer()

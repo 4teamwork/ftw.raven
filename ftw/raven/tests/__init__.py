@@ -1,6 +1,8 @@
 from ftw.raven import client
+from ftw.raven.client import get_raven_client
 from ftw.raven.testing import RAVEN_FUNCTIONAL
 from ftw.raven.tests.client_mock import ClientMock
+from ftw.testbrowser import Browser
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from unittest2 import TestCase
@@ -28,3 +30,28 @@ class FunctionalTestCase(TestCase):
             '<configure xmlns:raven="http://ns.4teamwork.ch/raven">' +
             '  <raven:config dsn="{}" />'.format(dsn) +
             '</configure>')
+
+    def request_to_error_view(self, view='make_key_error'):
+        # We need to make sure that the raven client mock is created
+        # in this thread and not in the sub-thread created by the
+        # testbrowser, in order to be able to read it later.
+        get_raven_client()
+
+        with Browser()(self.layer['app']) as browser:
+            self.disable_handle_errors(browser)
+            try:
+                browser.open(view=view)
+            except:
+                pass
+
+    def disable_handle_errors(self, browser):
+        """If the testbrowser tells zope to not handle errors, as it does
+        by default, the exception handling is not triggered, thus no errors
+        are reported to sentry.
+        In order to be able to test the reporting, we therefore need to
+        enable error handling by removing the header.
+        """
+        header = ('X-zope-handle-errors', 'False')
+        mechbrowser = browser.get_mechbrowser()
+        if header in mechbrowser.addheaders:
+            mechbrowser.addheaders.remove(header)
