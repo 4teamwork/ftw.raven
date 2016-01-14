@@ -4,6 +4,7 @@ import os
 version = '1.0.1.dev0'
 
 tests_require = [
+    'ftw.builder',
     'ftw.testbrowser',
     'ftw.testing',
     'plone.app.testing',

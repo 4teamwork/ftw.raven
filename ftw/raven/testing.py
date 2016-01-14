@@ -1,3 +1,6 @@
+from ftw.builder.testing import BUILDER_LAYER
+from ftw.builder.testing import functional_session_factory
+from ftw.builder.testing import set_builder_session_factory
 from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
@@ -6,7 +9,7 @@ from zope.configuration import xmlconfig
 
 
 class RavenLayer(PloneSandboxLayer):
-    defaultBases = (COMPONENT_REGISTRY_ISOLATION, )
+    defaultBases = (COMPONENT_REGISTRY_ISOLATION, BUILDER_LAYER)
 
     def setUpZope(self, app, configurationContext):
         xmlconfig.string(
@@ -23,5 +26,6 @@ class RavenLayer(PloneSandboxLayer):
 
 RAVEN_FIXTURE = RavenLayer()
 RAVEN_FUNCTIONAL = FunctionalTesting(
-    bases=(RAVEN_FIXTURE, ),
+    bases=(RAVEN_FIXTURE,
+           set_builder_session_factory(functional_session_factory)),
     name="ftw.raven:functional")
