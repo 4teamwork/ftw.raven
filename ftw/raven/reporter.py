@@ -1,6 +1,7 @@
 from AccessControl.users import nobody
 from Acquisition import aq_acquire
 from ftw.raven.client import get_raven_client
+from yolk.yolklib import Distributions
 import logging
 import sys
 
@@ -17,7 +18,8 @@ def maybe_report_exception(context, request, *exc_info):
         try:
             data = {'request': prepare_request_infos(request),
                     'user': prepare_user_infos(context, request),
-                    'extra': prepare_extra_infos(context, request)}
+                    'extra': prepare_extra_infos(context, request),
+                    'modules': prepare_modules_infos()}
         except:
             LOG.error('Error while preparing sentry data.')
             raise
@@ -79,6 +81,14 @@ def prepare_user_infos(context, request):
         data.update({'authentication': 'anonymous'})
 
     return data
+
+
+def prepare_modules_infos():
+    dists = (dist for (dist, active) in Distributions().get_distributions('all')
+             if active)
+    modules = dict((dist.project_name, dist.version) for dist in dists)
+    modules['python'] = sys.version_info
+    return modules
 
 
 def prepare_extra_infos(context, request):

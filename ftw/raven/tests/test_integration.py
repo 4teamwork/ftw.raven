@@ -67,6 +67,11 @@ class TestIntegration(FunctionalTestCase):
         self.assertIn('context', call['data']['extra'])
         self.assertIn('request.other', call['data']['extra'])
 
+    def test_modules_infos(self):
+        call = self.make_error_and_get_capture_call()
+        self.assertIn('ftw.raven', call['data']['modules'])
+        self.assertIn('python', call['data']['modules'])
+
     def test_exceptions_catched_when_client_crashes(self):
         CrashingClientMock.install()
         self.make_raven_config()

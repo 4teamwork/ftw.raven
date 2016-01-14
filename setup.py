@@ -41,9 +41,10 @@ setup(name='ftw.raven',
 
 
       install_requires=[
-          'raven',
           'Plone',
+          'raven',
           'setuptools',
+          'yolk',
       ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
