@@ -13,19 +13,15 @@ Installation and configuration
 ==============================
 
 - Add the `ftw.raven` package to your dependencies.
-- Configure the client with ZCML, preferrably in buildout.
+- Configure the raven client with environment variables in buildout
 
 Example configuration for buildout:
 
 .. code:: ini
 
     [instance]
-    eggs += ftw.raven
-    zcml-additional =
-        <configure xmlns:raven="http://ns.4teamwork.ch/raven">
-            <include package="ftw.raven" />
-            <raven:config dsn="https://123:456@sentry.local/2" />
-        </configure>
+    environment-vars +=
+        RAVEN_DSN https://123:456@sentry.local/2
 
 
 Links

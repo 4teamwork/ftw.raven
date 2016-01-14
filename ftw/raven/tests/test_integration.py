@@ -3,12 +3,13 @@ from ftw.builder import create
 from ftw.raven.client import get_raven_client
 from ftw.raven.tests import FunctionalTestCase
 from ftw.raven.tests.client_mock import CrashingClientMock
+import os
 
 
 class TestIntegration(FunctionalTestCase):
 
     def test_errors_in_requests_are_captured(self):
-        self.make_raven_config()
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.request_to_error_view()
         calls = get_raven_client().captureException_calls
         self.assertEquals(1, len(calls), 'Expected one raven client call')
@@ -74,7 +75,7 @@ class TestIntegration(FunctionalTestCase):
 
     def test_exceptions_catched_when_client_crashes(self):
         CrashingClientMock.install()
-        self.make_raven_config()
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.assertEquals(0, get_raven_client().crashes)
         self.request_to_error_view()
         self.assertEquals(
@@ -84,7 +85,7 @@ class TestIntegration(FunctionalTestCase):
             ' 2. Report the meta exception that the first one failed.')
 
     def make_error_and_get_capture_call(self, **kwargs):
-        self.make_raven_config()
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.request_to_error_view(**kwargs)
         calls = get_raven_client().captureException_calls
         self.assertEquals(1, len(calls), 'Expected one raven client call')

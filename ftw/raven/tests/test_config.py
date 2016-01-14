@@ -1,15 +1,18 @@
 from ftw.raven.config import get_raven_config
 from ftw.raven.tests import FunctionalTestCase
+import os
 
 
-class TestRavenConfigDirective(FunctionalTestCase):
+class TestRavenConfig(FunctionalTestCase):
 
-    def test_no_raven_config_by_default(self):
-        self.assertIsNone(get_raven_config())
+    def test_not_enabled_when_not_configured(self):
+        self.assertFalse(get_raven_config().enabled)
 
-    def test_raven_config_is_configured_in_ZCML(self):
-        dsn = 'https://123:456@sentry.local/2'
-        self.make_raven_config(dsn=dsn)
-        config = get_raven_config()
-        self.assertIsNotNone(config)
-        self.assertEquals(dsn, config.dsn)
+    def test_enabled_when_dsn_configured(self):
+        os.environ['RAVEN_DSN'] = 'https://123:456@sentry.local/2'
+        self.assertTrue(get_raven_config().enabled)
+
+    def test_dsn_is_accessible_as_attribute(self):
+        os.environ['RAVEN_DSN'] = 'https://123:456@sentry.local/3'
+        self.assertEquals('https://123:456@sentry.local/3',
+                          get_raven_config().dsn)

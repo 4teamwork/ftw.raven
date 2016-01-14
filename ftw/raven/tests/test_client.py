@@ -1,6 +1,7 @@
 from ftw.raven.client import get_raven_client
 from ftw.raven.client import purge_raven_client
 from ftw.raven.tests import FunctionalTestCase
+import os
 
 
 class TestClient(FunctionalTestCase):
@@ -9,12 +10,11 @@ class TestClient(FunctionalTestCase):
         self.assertIsNone(get_raven_client())
 
     def test_client_is_utility(self):
-        dsn = 'https://foo:bar@sentry.local/3'
-        self.make_raven_config(dsn)
+        os.environ['RAVEN_DSN'] = dsn = 'https://foo:bar@sentry.local/3'
         self.assertEquals(dsn, get_raven_client().dsn)
 
     def test_client_is_cached_and_can_be_purged(self):
-        self.make_raven_config()
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         first_client = get_raven_client()
         self.assertTrue(first_client)
         self.assertEquals(id(first_client), id(get_raven_client()))

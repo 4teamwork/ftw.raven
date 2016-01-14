@@ -1,6 +1,7 @@
 from ftw.raven import reporter
 from ftw.raven.client import get_raven_client
 from ftw.raven.tests import FunctionalTestCase
+import os
 
 
 class TestReporter(FunctionalTestCase):
@@ -9,7 +10,7 @@ class TestReporter(FunctionalTestCase):
         """When an exception happens while preparing the request,
         the exception should be catched and reported as raven_meta_error.
         """
-        self.make_raven_config()
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.assertEquals(0, len(get_raven_client().captureException_calls))
         reporter.maybe_report_exception(*[None]*5)
         self.assertEquals(1, len(get_raven_client().captureException_calls),

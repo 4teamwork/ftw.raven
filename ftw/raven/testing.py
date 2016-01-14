@@ -6,6 +6,7 @@ from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
 from zope.configuration import xmlconfig
+import os
 
 
 class RavenLayer(PloneSandboxLayer):
@@ -22,6 +23,11 @@ class RavenLayer(PloneSandboxLayer):
             context=configurationContext)
 
         z2.installProduct(app, 'plone.app.linkintegrity')
+
+    def testTearDown(self):
+        for name in os.environ.keys():
+            if name.startswith('RAVEN'):
+                del os.environ[name]
 
 
 RAVEN_FIXTURE = RavenLayer()

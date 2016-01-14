@@ -6,6 +6,7 @@ from ftw.testbrowser import Browser
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from unittest2 import TestCase
+import os
 import transaction
 
 
@@ -24,12 +25,6 @@ class FunctionalTestCase(TestCase):
     def grant(self, *roles):
         setRoles(self.portal, TEST_USER_ID, roles)
         transaction.commit()
-
-    def make_raven_config(self, dsn='https://usr:pwd@sentry.local/1'):
-        self.load_zcml_string(
-            '<configure xmlns:raven="http://ns.4teamwork.ch/raven">' +
-            '  <raven:config dsn="{}" />'.format(dsn) +
-            '</configure>')
 
     def request_to_error_view(self, view='make_key_error', data=None,
                               login_as=None):

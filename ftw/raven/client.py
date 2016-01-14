@@ -7,17 +7,17 @@ _client_cache = None
 
 
 def get_raven_client():
+    config = get_raven_config()
+    if not config.enabled:
+        return None
+
     if globals().get('_client_cache', None) is not None:
         return globals()['_client_cache']
 
-    config = get_raven_config()
-    if config is not None:
-        globals()['_client_cache'] = raven_client_class(
-            dsn=config.dsn,
-            install_sys_hook=False)
-        return globals()['_client_cache']
-    else:
-        return None
+    globals()['_client_cache'] = raven_client_class(
+        dsn=config.dsn,
+        install_sys_hook=False)
+    return globals()['_client_cache']
 
 
 def purge_raven_client():
