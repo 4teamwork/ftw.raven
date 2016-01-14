@@ -1,10 +1,14 @@
 from AccessControl.users import nobody
 from Acquisition import aq_acquire
 from ftw.raven.client import get_raven_client
+from ftw.raven.config import get_raven_config
+from pkg_resources import DistributionNotFound
+from pkg_resources import get_distribution
+from raven import fetch_git_sha
+from raven.exceptions import InvalidGitRepository
 from yolk.yolklib import Distributions
 import logging
 import sys
-
 
 LOG = logging.getLogger('ftw.raven.reporter')
 
@@ -20,6 +24,9 @@ def maybe_report_exception(context, request, *exc_info):
                     'user': prepare_user_infos(context, request),
                     'extra': prepare_extra_infos(context, request),
                     'modules': prepare_modules_infos()}
+            release = get_release()
+            if release:
+                data['release'] = release
         except:
             LOG.error('Error while preparing sentry data.')
             raise
@@ -84,11 +91,33 @@ def prepare_user_infos(context, request):
 
 
 def prepare_modules_infos():
-    dists = (dist for (dist, active) in Distributions().get_distributions('all')
+    dists = (dist for (dist, active)
+             in Distributions().get_distributions('all')
              if active)
     modules = dict((dist.project_name, dist.version) for dist in dists)
     modules['python'] = sys.version_info
     return modules
+
+
+def get_release():
+    config = get_raven_config()
+    if config.project_dist:
+        try:
+            return get_distribution(config.project_dist).version
+        except DistributionNotFound:
+            LOG.error('The distribution "{}" could not be found.'.format(
+                config.project_dist))
+            return None
+
+    if config.buildout_root:
+        try:
+            return fetch_git_sha(config.buildout_root)
+        except InvalidGitRepository:
+            LOG.error('The path {} does not exist or is not'
+                      ' a git repository'.format(config.buildout_root))
+            return None
+
+    return None
 
 
 def prepare_extra_infos(context, request):

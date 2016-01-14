@@ -3,6 +3,7 @@ from ftw.builder import create
 from ftw.raven.client import get_raven_client
 from ftw.raven.tests import FunctionalTestCase
 from ftw.raven.tests.client_mock import CrashingClientMock
+from pkg_resources import get_distribution
 import os
 
 
@@ -72,6 +73,16 @@ class TestIntegration(FunctionalTestCase):
         call = self.make_error_and_get_capture_call()
         self.assertIn('ftw.raven', call['data']['modules'])
         self.assertIn('python', call['data']['modules'])
+
+    def test_release_not_sent_when_nothing_configured(self):
+        call = self.make_error_and_get_capture_call()
+        self.assertNotIn('release', call['data'])
+
+    def test_release_with_project_dist(self):
+        os.environ['RAVEN_PROJECT_DIST'] = 'zope.interface'
+        call = self.make_error_and_get_capture_call()
+        version = get_distribution('zope.interface').version
+        self.assertDictContainsSubset({'release': version}, call['data'])
 
     def test_exceptions_catched_when_client_crashes(self):
         CrashingClientMock.install()

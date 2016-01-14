@@ -6,7 +6,6 @@ from ftw.testbrowser import Browser
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from unittest2 import TestCase
-import os
 import transaction
 
 

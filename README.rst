@@ -24,6 +24,40 @@ Example configuration for buildout:
         RAVEN_DSN https://123:456@sentry.local/2
 
 
+Release tracking
+================
+
+When an exception is reported, the release can be sent along.
+A release can either be the version number of a released distribution
+(e.g. released on pypi) or the HEAD SHA of a project checkout when the
+app is not released on pypi.
+
+Version of a released distribution
+----------------------------------
+
+For using a distribution version as release, the environment variable
+``RAVEN_PROJECT_DIST`` must contain the name of the distribution, e.g.
+
+.. code:: ini
+
+    [instance]
+    environment-vars +=
+        RAVEN_PROJECT_DIST my.project
+
+
+Git SHA of checkout
+-------------------
+
+Usually the buildout root is a checkout of the project, thus we need to
+configured the ``RAVEN_BUILDOUT_ROOT`` so that the git repository is found:
+
+.. code:: ini
+
+    [instance]
+    environment-vars +=
+        RAVEN_BUILDOUT_ROOT ${buildout:directory}
+
+
 Links
 =====
 

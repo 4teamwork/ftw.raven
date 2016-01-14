@@ -16,3 +16,12 @@ class TestRavenConfig(FunctionalTestCase):
         os.environ['RAVEN_DSN'] = 'https://123:456@sentry.local/3'
         self.assertEquals('https://123:456@sentry.local/3',
                           get_raven_config().dsn)
+
+    def test_project_dist(self):
+        os.environ['RAVEN_PROJECT_DIST'] = 'my.project'
+        self.assertEquals('my.project', get_raven_config().project_dist)
+
+    def test_buildout_root(self):
+        parent_dir = os.path.dirname(__file__)
+        os.environ['RAVEN_BUILDOUT_ROOT'] = parent_dir
+        self.assertEquals(parent_dir, get_raven_config().buildout_root)
