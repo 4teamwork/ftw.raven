@@ -3,7 +3,8 @@ from ftw.raven import client
 
 class ClientMock(object):
 
-    def __init__(self, dsn):
+    def __init__(self, dsn=None, raise_send_errors=False, transport=None,
+                 install_sys_hook=True, **options):
         self.dsn = dsn
         self.captureException_calls = []
 

@@ -12,7 +12,9 @@ def get_raven_client():
 
     config = get_raven_config()
     if config is not None:
-        globals()['_client_cache'] = raven_client_class(**vars(config))
+        globals()['_client_cache'] = raven_client_class(
+            dsn=config.dsn,
+            install_sys_hook=False)
         return globals()['_client_cache']
     else:
         return None
