@@ -2,6 +2,9 @@ from ftw.raven import reporter
 from ftw.raven.client import get_raven_client
 from ftw.raven.tests import FunctionalTestCase
 from pkg_resources import get_distribution
+from zExceptions import NotFound
+from zExceptions import Redirect
+from zExceptions import Unauthorized
 import os
 
 
@@ -13,7 +16,7 @@ class TestReporter(FunctionalTestCase):
         """
         os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.assertEquals(0, len(get_raven_client().captureException_calls))
-        reporter.maybe_report_exception(*[None]*5)
+        reporter.maybe_report_exception(None, None, KeyError, None, None)
         self.assertEquals(1, len(get_raven_client().captureException_calls),
                           'Expected exactly one error to be reported.')
         call, = get_raven_client().captureException_calls
@@ -38,6 +41,29 @@ class TestReporter(FunctionalTestCase):
         self.assertTrue(release)
         self.assertEquals(40, len(release),
                           'Expected git SHA to be 40 bytes big.')
+
+    def test_is_exception_type_ignored_can_handle_None(self):
+        self.assertTrue(reporter.is_exception_type_ignored(None))
+
+    def test_default_exceptions_are_not_ignored(self):
+        self.assertFalse(reporter.is_exception_type_ignored(KeyError))
+        self.assertFalse(reporter.is_exception_type_ignored(Exception))
+
+    def test_default_ignored_exceptions(self):
+        self.assertTrue(reporter.is_exception_type_ignored(NotFound))
+        self.assertTrue(reporter.is_exception_type_ignored(Unauthorized))
+        self.assertTrue(reporter.is_exception_type_ignored(Redirect))
+
+    def test_enabling_default_ignored_exceptions(self):
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'NotFound'
+        self.assertFalse(reporter.is_exception_type_ignored(NotFound))
+        self.assertTrue(reporter.is_exception_type_ignored(Unauthorized))
+        self.assertTrue(reporter.is_exception_type_ignored(Redirect))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect'
+        self.assertTrue(reporter.is_exception_type_ignored(NotFound))
+        self.assertFalse(reporter.is_exception_type_ignored(Unauthorized))
+        self.assertFalse(reporter.is_exception_type_ignored(Redirect))
 
     def test_no_exception_when_buildout_root_invalid(self):
         os.environ['RAVEN_BUILDOUT_ROOT'] = '/invalid/buildout/root'

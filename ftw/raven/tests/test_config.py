@@ -25,3 +25,19 @@ class TestRavenConfig(FunctionalTestCase):
         parent_dir = os.path.dirname(__file__)
         os.environ['RAVEN_BUILDOUT_ROOT'] = parent_dir
         self.assertEquals(parent_dir, get_raven_config().buildout_root)
+
+    def test_ignored_exception_classnames(self):
+        self.assertEquals(set(['Redirect', 'NotFound', 'Unauthorized']),
+                          set(get_raven_config().ignored_exception_classnames))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'NotFound'
+        self.assertEquals(set(['Redirect', 'Unauthorized']),
+                          set(get_raven_config().ignored_exception_classnames))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect'
+        self.assertEquals(set(['NotFound']),
+                          set(get_raven_config().ignored_exception_classnames))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect, NotFound'
+        self.assertEquals(set(),
+                          set(get_raven_config().ignored_exception_classnames))

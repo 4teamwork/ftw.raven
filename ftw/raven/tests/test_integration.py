@@ -95,6 +95,15 @@ class TestIntegration(FunctionalTestCase):
             ' 1. Report the actual exception,'
             ' 2. Report the meta exception that the first one failed.')
 
+    def test_404_reporting_can_be_enabled(self):
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
+        self.request_to_error_view(view='make_404_err')
+        self.assertEquals(0, len(get_raven_client().captureException_calls))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'NotFound'
+        self.request_to_error_view(view='make_404_err')
+        self.assertEquals(1, len(get_raven_client().captureException_calls))
+
     def make_error_and_get_capture_call(self, **kwargs):
         os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.request_to_error_view(**kwargs)

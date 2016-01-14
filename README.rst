@@ -58,6 +58,24 @@ configured the ``RAVEN_BUILDOUT_ROOT`` so that the git repository is found:
         RAVEN_BUILDOUT_ROOT ${buildout:directory}
 
 
+Ignored exceptions
+==================
+
+By default, not all exceptions are reported, because some exceptions
+such as redirects or 404s are not errors but are implemented as exceptions.
+Without configuration, the exceptions ``NotFound``, ``Unauthorized`` and
+``Redirect``.
+
+Reporting of those exceptions can be enabled by with the environment variable
+``RAVEN_ENABLE_EXCEPTIONS``:
+
+.. code::
+
+    [instance]
+    environment-vars +=
+        RAVEN_ENABLE_EXCEPTIONS NotFound, Redirect
+
+
 Links
 =====
 

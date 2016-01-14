@@ -13,7 +13,11 @@ import sys
 LOG = logging.getLogger('ftw.raven.reporter')
 
 
-def maybe_report_exception(context, request, *exc_info):
+def maybe_report_exception(context, request, exc_type, exc, traceback):
+    if is_exception_type_ignored(exc_type):
+        return
+
+    exc_info = exc_type, exc, traceback
     try:
         client = get_raven_client()
         if client is None:
@@ -47,6 +51,13 @@ def maybe_report_exception(context, request, *exc_info):
                     ' another error.'}})
         except:
             LOG.error('Failed to report error occured while reporting error.')
+
+
+def is_exception_type_ignored(exc_type):
+    if exc_type is None:
+        return True
+    ignored_classnames = get_raven_config().ignored_exception_classnames
+    return exc_type.__name__ in ignored_classnames
 
 
 def prepare_request_infos(request):
