@@ -24,6 +24,8 @@ Example configuration for buildout:
 .. code:: ini
 
     [instance]
+    eggs +=
+        ftw.raven
     environment-vars +=
         RAVEN_DSN https://123:456@sentry.local/2
 
