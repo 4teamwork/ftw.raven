@@ -108,8 +108,8 @@ def get_client_ip_address(request):
     request initally.
     """
     ips = request.environ.get(
-        'REMOTE_ADDR',
-        request.environ.get('HTTP_X_FORWARDED_FOR'))
+        'HTTP_X_FORWARDED_FOR',
+        request.environ.get('REMOTE_ADDR'))
 
     if ips is None:
         return ''
