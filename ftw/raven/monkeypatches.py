@@ -2,6 +2,9 @@ from App.ZApplication import ZApplicationWrapper
 from ftw.raven.reporter import maybe_report_exception
 from plone.app.linkintegrity import monkey
 from plone.app.linkintegrity.monkey import zpublisher_exception_hook_wrapper
+from ZODB.POSException import ConflictError
+from ZPublisher.Publish import Retry
+import sys
 
 
 def zpublisher_exception_hook_wrapper_wrapper(published, REQUEST,
@@ -10,9 +13,33 @@ def zpublisher_exception_hook_wrapper_wrapper(published, REQUEST,
     This allows us to hook into the exception handling for
     reporting exceptions.
     """
-    maybe_report_exception(published, REQUEST, t, v, traceback)
-    return zpublisher_exception_hook_wrapper(published, REQUEST,
-                                             t, v, traceback)
+    report_exception = True
+    args = [published, REQUEST, t, v, traceback]
+
+    try:
+        try:
+            return zpublisher_exception_hook_wrapper(*args)
+
+        except Retry:
+            # There was probably a conflict, resulting in a Retry
+            # and the request will be done once again completely.
+            report_exception = False
+            raise
+
+        except ConflictError:
+            # This request was probably executed 3 times
+            # (with Retry-exceptions, see above) but could not be
+            # finished because of a ConflictError.
+            # We want to report the ConflictError now, that's why
+            # we replace the previous exception (which was probably
+            # a Retry exception) with our ConflictError.
+            args[-3:] = sys.exc_info()
+            report_exception = True
+            raise
+
+    finally:
+        if report_exception:
+            maybe_report_exception(*args)
 
 
 def ZApplicationWrapper__repr__(self):

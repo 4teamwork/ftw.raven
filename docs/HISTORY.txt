@@ -5,7 +5,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not report ConflictError which are handled with a Retry,
+  but those which failed after 3 retries.
+  [jone]
 
 
 1.0.0 (2016-01-15)
