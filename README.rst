@@ -82,6 +82,14 @@ Reporting of those exceptions can be enabled by with the environment variable
         RAVEN_ENABLE_EXCEPTIONS NotFound, Redirect
 
 
+Report JavaScript errors
+========================
+
+In order to be able to report JavaScript-errors, the ``ftw.raven``
+Generic Setup profile must be installed, which registers a JavaScript
+including the raven library and the configuration.
+
+
 Links
 =====
 

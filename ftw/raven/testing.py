@@ -23,6 +23,7 @@ class RavenLayer(PloneSandboxLayer):
             context=configurationContext)
 
         z2.installProduct(app, 'plone.app.linkintegrity')
+        z2.installProduct(app, 'ftw.raven')
 
     def testTearDown(self):
         for name in os.environ.keys():

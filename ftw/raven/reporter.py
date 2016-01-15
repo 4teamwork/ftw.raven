@@ -83,12 +83,13 @@ def prepare_request_infos(request):
     }
 
 
-def prepare_user_infos(context, request):
+def prepare_user_infos(context, request, include_roles=True):
     user = request.get('AUTHENTICATED_USER', nobody)
 
-    data = {'ip_address': request.getClientAddr(),
-            'roles': user.getRoles(),
-            'roles_in_context': user.getRolesInContext(context)}
+    data = {'ip_address': request.getClientAddr()}
+    if include_roles:
+        data['roles'] = user.getRoles()
+        data['roles_in_context'] = user.getRolesInContext(context)
 
     if user and user != nobody:
         data.update({'id': user.getId(),

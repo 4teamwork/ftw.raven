@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<object name="portal_javascripts" meta_type="JavaScripts Registry">
+
+    <javascript
+        id="ftw.raven.js"
+        cacheable="False"
+        compression="safe"
+        cookable="False"
+        enabled="True"
+        expression=""
+        insert-before="*"
+        />
+
+</object>
