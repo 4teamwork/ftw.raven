@@ -5,6 +5,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Report the client IP instead of the proxy IP.
+  [jone]
+
 - Do not report ConflictError which are handled with a Retry,
   but those which failed after 3 retries.
   [jone]

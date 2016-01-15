@@ -86,7 +86,7 @@ def prepare_request_infos(request):
 def prepare_user_infos(context, request, include_roles=True):
     user = request.get('AUTHENTICATED_USER', nobody)
 
-    data = {'ip_address': request.getClientAddr()}
+    data = {'ip_address': get_client_ip_address(request)}
     if include_roles:
         data['roles'] = user.getRoles()
         data['roles_in_context'] = user.getRolesInContext(context)
@@ -101,6 +101,22 @@ def prepare_user_infos(context, request, include_roles=True):
         data.update({'authentication': 'anonymous'})
 
     return data
+
+
+def get_client_ip_address(request):
+    """Returns the IP address of the host which sent the
+    request initally.
+    """
+    ips = request.environ.get(
+        'REMOTE_ADDR',
+        request.environ.get('HTTP_X_FORWARDED_FOR'))
+
+    if ips is None:
+        return ''
+    elif not hasattr(ips, 'split'):
+        return ips
+    else:
+        return ips.split(',')[0].strip()
 
 
 def prepare_modules_infos():
