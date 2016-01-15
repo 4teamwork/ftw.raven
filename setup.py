@@ -14,7 +14,7 @@ tests_require = [
 
 setup(name='ftw.raven',
       version=version,
-      description="Plone addon for sentry",
+      description="Plone integration for raven / sentry.",
       long_description=open("README.rst").read() + "\n" + open(
           os.path.join("docs", "HISTORY.txt")).read(),
 

@@ -8,6 +8,10 @@ This package extends `raven`, the Sentry integration with
 a Plone integration wich is not logger based but hooks into
 the Zope exception handling.
 
+Be aware that there is already a standard `logging based Zope /
+Plone integration for raven <https://docs.getsentry.com/hosted/clients/python/integrations/zope/>`_. You should use the standard implementation unless you
+want the exception hook based integration.
+
 
 Installation and configuration
 ==============================
