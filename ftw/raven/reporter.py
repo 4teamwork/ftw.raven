@@ -10,6 +10,7 @@ from yolk.yolklib import Distributions
 import logging
 import sys
 
+
 LOG = logging.getLogger('ftw.raven.reporter')
 
 
