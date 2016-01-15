@@ -106,7 +106,7 @@ def prepare_modules_infos():
              in Distributions().get_distributions('all')
              if active)
     modules = dict((dist.project_name, dist.version) for dist in dists)
-    modules['python'] = sys.version_info
+    modules['python'] = '.'.join(map(str, sys.version_info[:3]))
     return modules
 
 
