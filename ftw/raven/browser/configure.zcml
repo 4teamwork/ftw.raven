@@ -11,4 +11,11 @@
         permission="zope.Public"
         />
 
+    <browser:page
+        name="raven-test"
+        for="*"
+        class=".demo.MakeError"
+        permission="cmf.ManagePortal"
+        />
+
 </configure>

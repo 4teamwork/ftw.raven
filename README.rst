@@ -30,6 +30,17 @@ Example configuration for buildout:
         RAVEN_DSN https://123:456@sentry.local/2
 
 
+Configuration-Test
+==================
+
+You can test your configuration by visiting the view ``raven-test`` on
+any context as ``Manager``-user.
+This will trigger an exception which should appear in your sentry project.
+
+In JavaScript you can call the function ``raven_test()`` in your javascript
+console, which will also trigger an exception.
+
+
 Release tracking
 ================
 

@@ -5,6 +5,10 @@ Changelog
 1.0.3 (unreleased)
 ------------------
 
+- Add a view ``raven-test`` and a JavaScript function ``raven_test()``
+  for testing the raven configuration and connection. Both will throw
+  an exception which will be reported to sentry. [jone]
+
 - New environment variables ``RAVEN_TAGS`` and ``RAVEN_TAGS_FILE`` for
   making it possible to attach additional static tags. [jone]
 
