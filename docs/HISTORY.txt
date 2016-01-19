@@ -5,7 +5,8 @@ Changelog
 1.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- New environment variables ``RAVEN_TAGS`` and ``RAVEN_TAGS_FILE`` for
+  making it possible to attach additional static tags. [jone]
 
 
 1.0.2 (2016-01-15)

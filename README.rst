@@ -90,6 +90,33 @@ Generic Setup profile must be installed, which registers a JavaScript
 including the raven library and the configuration.
 
 
+Additional tags
+===============
+
+It is possible to report additional, predefined tags for a deployment.
+The tags may be directly declared as JSON in the environment variable
+``RAVEN_TAGS`` or the variable ``RAVEN_TAGS_FILE`` may contain a path
+to a json-file.
+These two methods may be combined, and the respective dictionaries will
+be merged (with tags from the ``RAVEN_TAGS`` variable taking precedence).
+
+The JSON must be a one-level hash containing strings as keys and values.
+
+Examples:
+
+.. code::
+
+    [instance]
+    environment-vars +=
+        RAVEN_TAGS {"deployment": "production"}
+
+.. code::
+
+    [instance]
+    environment-vars +=
+        RAVEN_TAGS_FILE ${buildout:directory}/conf/raven_tags.json
+
+
 Links
 =====
 

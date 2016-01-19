@@ -4,6 +4,7 @@ from ftw.builder.testing import set_builder_session_factory
 from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PloneSandboxLayer
+from plone.memoize import forever
 from plone.testing import z2
 from zope.configuration import xmlconfig
 import os
@@ -29,6 +30,9 @@ class RavenLayer(PloneSandboxLayer):
         for name in os.environ.keys():
             if name.startswith('RAVEN'):
                 del os.environ[name]
+
+        # purge forever caches
+        forever._memos.clear()
 
 
 RAVEN_FIXTURE = RavenLayer()

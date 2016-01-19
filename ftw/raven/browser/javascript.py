@@ -49,6 +49,10 @@ class RavenJavaScript(BrowserView):
         if hasattr(socket, 'gethostname'):
             args['serverName'] = socket.gethostname()
 
+        tags = reporter.prepare_tags()
+        if tags:
+            args['tags'] = tags
+
         return args
 
     def _get_dsn_without_private_key(self):

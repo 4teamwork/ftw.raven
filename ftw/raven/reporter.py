@@ -4,6 +4,7 @@ from ftw.raven.client import get_raven_client
 from ftw.raven.config import get_raven_config
 from pkg_resources import DistributionNotFound
 from pkg_resources import get_distribution
+from plone.memoize import forever
 from raven import fetch_git_sha
 from raven.exceptions import InvalidGitRepository
 from yolk.yolklib import Distributions
@@ -28,7 +29,8 @@ def maybe_report_exception(context, request, exc_type, exc, traceback):
             data = {'request': prepare_request_infos(request),
                     'user': prepare_user_infos(context, request),
                     'extra': prepare_extra_infos(context, request),
-                    'modules': prepare_modules_infos()}
+                    'modules': prepare_modules_infos(),
+                    'tags': prepare_tags()}
             release = get_release()
             if release:
                 data['release'] = release
@@ -126,6 +128,11 @@ def prepare_modules_infos():
     modules = dict((dist.project_name, dist.version) for dist in dists)
     modules['python'] = '.'.join(map(str, sys.version_info[:3]))
     return modules
+
+
+@forever.memoize
+def prepare_tags():
+    return get_raven_config().tags
 
 
 def get_release():
