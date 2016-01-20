@@ -5,6 +5,8 @@ Changelog
 1.0.3 (unreleased)
 ------------------
 
+- Report error_log number as tag. [jone]
+
 - Add a view ``raven-test`` and a JavaScript function ``raven_test()``
   for testing the raven configuration and connection. Both will throw
   an exception which will be reported to sentry. [jone]

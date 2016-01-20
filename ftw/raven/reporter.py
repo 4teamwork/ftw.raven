@@ -30,7 +30,7 @@ def maybe_report_exception(context, request, exc_type, exc, traceback):
                     'user': prepare_user_infos(context, request),
                     'extra': prepare_extra_infos(context, request),
                     'modules': prepare_modules_infos(),
-                    'tags': prepare_tags()}
+                    'tags': prepare_tags(exc)}
             release = get_release()
             if release:
                 data['release'] = release
@@ -130,9 +130,16 @@ def prepare_modules_infos():
     return modules
 
 
+def prepare_tags(exc):
+    tags = get_default_tags()
+    if hasattr(exc, 'error_log_id'):
+        tags['error_log_id'] = exc.error_log_id
+    return tags
+
+
 @forever.memoize
-def prepare_tags():
-    return get_raven_config().tags
+def get_default_tags():
+    return get_raven_config().tags.copy()
 
 
 def get_release():
