@@ -68,7 +68,7 @@ class RavenJavaScript(BrowserView):
         if hasattr(socket, 'gethostname'):
             args['serverName'] = socket.gethostname()
 
-        tags = reporter.prepare_tags()
+        tags = reporter.get_default_tags()
         if tags:
             args['tags'] = tags
 

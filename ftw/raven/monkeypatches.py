@@ -2,8 +2,10 @@ from App.ZApplication import ZApplicationWrapper
 from ftw.raven.reporter import maybe_report_exception
 from plone.app.linkintegrity import monkey
 from plone.app.linkintegrity.monkey import zpublisher_exception_hook_wrapper
+from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
 from ZODB.POSException import ConflictError
 from ZPublisher.Publish import Retry
+import re
 import sys
 
 
@@ -56,7 +58,28 @@ def ZApplicationWrapper__repr__(self):
     return '<{0}.{1} instance at {2}>'.format(mod, cls, mem)
 
 
+def SiteErrorLog_raising_wrapper(self, info):
+    """The default error_log assigns random, not guessable IDs to errors.
+    The return value of ``raising`` is usually the URL to the error_log
+    entry identified by its ID.
+    In order to be able to report the error_log ID to sentry later,
+    we store it on the exception.
+    """
+    result = self.raising_original(info)
+    if not info[1]:
+        return result
+
+    match = re.match('.*error_log/showEntry\?id=([\d\.]*)$', result)
+    if match:
+        info[1].error_log_id = match.group(1)
+
+    return result
+
+
 def install_patches():
     monkey.zpublisher_exception_hook_wrapper = (
         zpublisher_exception_hook_wrapper_wrapper)
     ZApplicationWrapper.__repr__ = ZApplicationWrapper__repr__
+    if SiteErrorLog.raising != SiteErrorLog_raising_wrapper:
+        SiteErrorLog.raising_original = SiteErrorLog.raising
+        SiteErrorLog.raising = SiteErrorLog_raising_wrapper
