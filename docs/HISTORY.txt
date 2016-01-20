@@ -5,7 +5,7 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix bug on errors ignored by error_log, such as NotFound. [jone]
 
 
 1.1.0 (2016-01-20)

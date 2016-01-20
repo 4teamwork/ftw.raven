@@ -66,7 +66,7 @@ def SiteErrorLog_raising_wrapper(self, info):
     we store it on the exception.
     """
     result = self.raising_original(info)
-    if not info[1]:
+    if not info[1] or not isinstance(result, (str, unicode)):
         return result
 
     match = re.match('.*error_log/showEntry\?id=([\d\.]*)$', result)
