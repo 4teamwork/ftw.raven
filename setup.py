@@ -42,6 +42,7 @@ setup(name='ftw.raven',
 
       install_requires=[
           'Plone',
+          'ftw.upgrade',
           'plone.memoize',
           'raven',
           'setuptools',

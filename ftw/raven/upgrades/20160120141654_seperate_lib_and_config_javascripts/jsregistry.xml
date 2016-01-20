@@ -15,10 +15,7 @@
     <javascript
         id="ftw.raven.js"
         cacheable="True"
-        compression="safe"
         cookable="True"
-        enabled="True"
-        expression=""
         insert-after="ftw.raven-config.js"
         />
 

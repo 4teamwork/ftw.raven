@@ -5,6 +5,13 @@
     i18n_domain="ftw.raven">
 
     <browser:page
+        name="ftw.raven-config.js"
+        for="*"
+        class=".javascript.RavenUserConfiguration"
+        permission="zope.Public"
+        />
+
+    <browser:page
         name="ftw.raven.js"
         for="*"
         class=".javascript.RavenJavaScript"

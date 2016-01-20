@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <object name="portal_javascripts" meta_type="JavaScripts Registry">
 
+    <javascript id="ftw.raven-config.js" remove="True" />
+
     <javascript id="ftw.raven.js" remove="True" />
 
 </object>
