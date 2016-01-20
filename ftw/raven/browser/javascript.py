@@ -1,3 +1,4 @@
+from AccessControl import getSecurityManager
 from ftw.raven import reporter
 from ftw.raven.config import get_raven_config
 from Products.Five.browser import BrowserView
@@ -5,6 +6,18 @@ import json
 import os
 import re
 import socket
+
+
+DEMO_FUNCTION = '''
+/* Testing function */
+function raven_test() {
+    try {
+        throw "Raven JavaScript test exception";
+    } catch(e) {
+        Raven.captureException(e)
+    }
+}
+'''
 
 
 class RavenJavaScript(BrowserView):
@@ -17,8 +30,8 @@ class RavenJavaScript(BrowserView):
             return ''
 
         return '\n'.join((self.get_raven_js(),
-                          '',
-                          self.get_config_js()))
+                            self.get_demo_function(),
+                            self.get_config_js()))
 
     def get_raven_js(self):
         path = os.path.join(os.path.dirname(__file__),
@@ -26,6 +39,12 @@ class RavenJavaScript(BrowserView):
                             'raven.min.js')
         with open(path, 'r') as shim:
             return shim.read()
+
+    def get_demo_function(self):
+        if getSecurityManager().getUser().has_role('Manager'):
+            return DEMO_FUNCTION
+        else:
+            return ''
 
     def get_config_js(self):
         return '\n'.join((

@@ -1,6 +1,7 @@
 from ftw.raven.tests import FunctionalTestCase
 from ftw.testbrowser import browsing
 from pkg_resources import get_distribution
+from plone.app.testing import SITE_OWNER_NAME
 import json
 import os
 import re
@@ -87,3 +88,19 @@ class TestJavaScript(FunctionalTestCase):
 
         self.assertDictContainsSubset({'tags': {'deployment_type': 'demo'}},
                                       config_args)
+
+    @browsing
+    def test_raven_test_function_only_for_managers(self, browser):
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
+        browser.open(view='ftw.raven.js')
+        self.assertFalse(
+            'function raven_test()' in browser.contents,
+            'Unexpectedly found a definition for the function "raven_test"'
+            ' in the JavaScript code, but it shouldnt be there for anonymous'
+            ' users.')
+
+        browser.login(SITE_OWNER_NAME).reload()
+        self.assertTrue(
+            'function raven_test()' in browser.contents,
+            'Expected the JavaScript function "raven_test" to be defined'
+            ' for Manager-users.')
