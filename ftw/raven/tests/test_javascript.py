@@ -73,3 +73,17 @@ class TestJavaScript(FunctionalTestCase):
 
         version = get_distribution('zope.interface').version
         self.assertDictContainsSubset({'release': version}, config_args)
+
+    @browsing
+    def test_tags_in_config_args(self, browser):
+        os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
+        os.environ['RAVEN_TAGS'] = '{"deployment_type": "demo"}'
+        browser.login().open(view='ftw.raven.js')
+        _shim, config = browser.contents.split('/* Raven Configuration: */')
+        xpr = re.compile(r'Raven.config\("[^"]*", ([^\)]*)\)')
+        self.assertRegexpMatches(config, xpr)
+        match = xpr.search(config)
+        config_args = json.loads(match.group(1))
+
+        self.assertDictContainsSubset({'tags': {'deployment_type': 'demo'}},
+                                      config_args)

@@ -42,6 +42,7 @@ setup(name='ftw.raven',
 
       install_requires=[
           'Plone',
+          'plone.memoize',
           'raven',
           'setuptools',
           'yolk',

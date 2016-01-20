@@ -1,3 +1,4 @@
+import json
 import os
 
 
@@ -31,6 +32,36 @@ class RavenConfig(object):
             ignored -= set(map(str.strip, enabled.split(',')))
 
         return tuple(ignored)
+
+    @property
+    def tags(self):
+        value = self._get_tags_from_file()
+        value.update(self._get_tags_from_env())
+        return value
+
+    def _get_tags_from_env(self):
+        value = self._get_stripped_env_variable('RAVEN_TAGS')
+        if not value:
+            return {}
+
+        try:
+            return json.loads(value)
+        except ValueError:
+            return {'RAVEN_TAGS': 'invalid configuration'}
+
+    def _get_tags_from_file(self):
+        value = self._get_stripped_env_variable('RAVEN_TAGS_FILE')
+        if not value:
+            return {}
+
+        if not os.path.isfile(value):
+            return {'RAVEN_TAGS_FILE': 'missing file'}
+
+        try:
+            with open(value) as tags_file:
+                return json.load(tags_file)
+        except ValueError:
+            return {'RAVEN_TAGS_FILE': 'invalid content'}
 
     def _get_stripped_env_variable(self, name):
         value = os.environ.get(name, '')

@@ -104,6 +104,11 @@ class TestIntegration(FunctionalTestCase):
         self.request_to_error_view(view='make_404_err')
         self.assertEquals(1, len(get_raven_client().captureException_calls))
 
+    def test_additional_tags_are_reported(self):
+        os.environ['RAVEN_TAGS'] = '{"maintainer": "hugo"}'
+        call = self.make_error_and_get_capture_call()
+        self.assertEquals({'maintainer': 'hugo'}, call['data']['tags'])
+
     def make_error_and_get_capture_call(self, **kwargs):
         os.environ['RAVEN_DSN'] = 'https://x:y@sentry.local/1'
         self.request_to_error_view(**kwargs)

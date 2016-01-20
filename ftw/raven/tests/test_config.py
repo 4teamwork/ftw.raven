@@ -1,6 +1,7 @@
 from ftw.raven.config import get_raven_config
 from ftw.raven.tests import FunctionalTestCase
 import os
+import tempfile
 
 
 class TestRavenConfig(FunctionalTestCase):
@@ -41,3 +42,55 @@ class TestRavenConfig(FunctionalTestCase):
         os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect, NotFound'
         self.assertEquals(set(),
                           set(get_raven_config().ignored_exception_classnames))
+
+    def test_no_tags_by_default(self):
+        self.assertEquals({}, get_raven_config().tags)
+
+    def test_custom_tags_with_env_variable(self):
+        os.environ['RAVEN_TAGS'] = ('{"deployment_type": "production",'
+                                    ' "maintainer": "peter"}')
+        self.assertEquals({"deployment_type": "production",
+                           "maintainer": "peter"},
+                          get_raven_config().tags)
+
+    def test_custom_tags_may_be_invalid(self):
+        os.environ['RAVEN_TAGS'] = '{"something completely wrong":}'
+        self.assertEquals({'RAVEN_TAGS': 'invalid configuration'},
+                          get_raven_config().tags)
+
+    def test_custom_tags_by_file(self):
+        with tempfile.NamedTemporaryFile() as tags_file:
+            os.environ['RAVEN_TAGS_FILE'] = tags_file.name
+            tags_file.write('{"status": "testing"}')
+            tags_file.seek(0)
+
+            self.assertEquals({'status': 'testing'},
+                              get_raven_config().tags)
+
+    def test_file_content_may_be_invalid(self):
+        with tempfile.NamedTemporaryFile() as tags_file:
+            os.environ['RAVEN_TAGS_FILE'] = tags_file.name
+            self.assertEquals({'RAVEN_TAGS_FILE': 'invalid content'},
+                              get_raven_config().tags)
+
+            tags_file.write('not json at all')
+            tags_file.seek(0)
+            self.assertEquals({'RAVEN_TAGS_FILE': 'invalid content'},
+                              get_raven_config().tags)
+
+    def test_file_may_not_exist(self):
+        os.environ['RAVEN_TAGS_FILE'] = '/foo/br'
+        self.assertEquals({'RAVEN_TAGS_FILE': 'missing file'},
+                          get_raven_config().tags)
+
+    def test_combining_tags_from_file_and_env_variable(self):
+        os.environ['RAVEN_TAGS'] = '{"maintainer": "hans", "priority": "env"}'
+        with tempfile.NamedTemporaryFile() as tags_file:
+            os.environ['RAVEN_TAGS_FILE'] = tags_file.name
+            tags_file.write('{"purpose": "demo", "priority": "file"}')
+            tags_file.seek(0)
+
+            self.assertEquals({'purpose': 'demo',
+                               'maintainer': 'hans',
+                               'priority': 'env'},
+                              get_raven_config().tags)
