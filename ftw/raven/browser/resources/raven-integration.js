@@ -1,4 +1,4 @@
-if (typeof(raven_config) != undefined) {
+if (typeof raven_config !== "undefined") {
   // From: https://gist.github.com/impressiver/5092952
   var ravenOptions = {
     // Will cause a deprecation warning, but the demise of `ignoreErrors` is still under discussion.
