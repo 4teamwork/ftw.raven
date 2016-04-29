@@ -80,8 +80,8 @@ Ignored exceptions
 
 By default, not all exceptions are reported, because some exceptions
 such as redirects or 404s are not errors but are implemented as exceptions.
-Without configuration, the exceptions ``NotFound``, ``Unauthorized`` and
-``Redirect``.
+Without configuration, the exceptions ``NotFound``, ``Unauthorized``,
+``Redirect`` and ``Intercepted``.
 
 Reporting of those exceptions can be enabled by with the environment variable
 ``RAVEN_ENABLE_EXCEPTIONS``:
