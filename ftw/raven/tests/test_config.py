@@ -28,20 +28,29 @@ class TestRavenConfig(FunctionalTestCase):
         self.assertEquals(parent_dir, get_raven_config().buildout_root)
 
     def test_ignored_exception_classnames(self):
-        self.assertEquals(set(['Redirect', 'NotFound', 'Unauthorized']),
-                          set(get_raven_config().ignored_exception_classnames))
+        self.assertEquals(
+            set(['Redirect', 'NotFound', 'Unauthorized', 'Intercepted']),
+            set(get_raven_config().ignored_exception_classnames))
 
         os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'NotFound'
-        self.assertEquals(set(['Redirect', 'Unauthorized']),
-                          set(get_raven_config().ignored_exception_classnames))
+        self.assertEquals(
+            set(['Redirect', 'Unauthorized', 'Intercepted']),
+            set(get_raven_config().ignored_exception_classnames))
 
         os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect'
-        self.assertEquals(set(['NotFound']),
-                          set(get_raven_config().ignored_exception_classnames))
+        self.assertEquals(
+            set(['NotFound', 'Intercepted']),
+            set(get_raven_config().ignored_exception_classnames))
 
         os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect, NotFound'
-        self.assertEquals(set(),
-                          set(get_raven_config().ignored_exception_classnames))
+        self.assertEquals(
+            set(['Intercepted']),
+            set(get_raven_config().ignored_exception_classnames))
+
+        os.environ['RAVEN_ENABLE_EXCEPTIONS'] = 'Unauthorized, Redirect, NotFound, Intercepted'
+        self.assertEquals(
+            set(),
+            set(get_raven_config().ignored_exception_classnames))
 
     def test_no_tags_by_default(self):
         self.assertEquals({}, get_raven_config().tags)
