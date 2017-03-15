@@ -52,6 +52,18 @@ class TestRavenConfig(FunctionalTestCase):
             set(),
             set(get_raven_config().ignored_exception_classnames))
 
+    def test_disabling_custom_exceptions(self):
+        self.assertNotIn('RandomError',
+                         get_raven_config().ignored_exception_classnames)
+
+        os.environ['RAVEN_DISABLE_EXCEPTIONS'] = 'RandomError'
+        self.assertIn('RandomError',
+                      get_raven_config().ignored_exception_classnames)
+
+        os.environ['RAVEN_DISABLE_EXCEPTIONS'] = 'Foo, RandomError, Bar'
+        self.assertIn('RandomError',
+                      get_raven_config().ignored_exception_classnames)
+
     def test_no_tags_by_default(self):
         self.assertEquals({}, get_raven_config().tags)
 

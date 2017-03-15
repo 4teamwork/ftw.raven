@@ -31,6 +31,10 @@ class RavenConfig(object):
         if enabled:
             ignored -= set(map(str.strip, enabled.split(',')))
 
+        disabled = self._get_stripped_env_variable('RAVEN_DISABLE_EXCEPTIONS')
+        if disabled:
+            ignored |= set(map(str.strip, disabled.split(',')))
+
         return tuple(ignored)
 
     @property
