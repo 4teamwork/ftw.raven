@@ -92,6 +92,15 @@ Reporting of those exceptions can be enabled by with the environment variable
     environment-vars +=
         RAVEN_ENABLE_EXCEPTIONS NotFound, Redirect
 
+If you need to disable custom exceptions, you can do that with the environment
+variable ``RAVEN_DISABLE_EXCEPTIONS``:
+
+.. code::
+
+    [instance]
+    environment-vars +=
+        RAVEN_DISABLE_EXCEPTIONS UnimportantError
+
 
 Report JavaScript errors
 ========================

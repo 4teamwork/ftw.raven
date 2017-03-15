@@ -5,7 +5,8 @@ Changelog
 1.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add ``RAVEN_DISABLE_EXCEPTIONS`` environment variable
+  for allowing to disable reporting of custom exceptions. [jone]
 
 
 1.1.3 (2016-04-29)
