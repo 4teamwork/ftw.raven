@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.4 (unreleased)
+1.2.0 (2017-03-15)
 ------------------
 
 - Add ``RAVEN_DISABLE_EXCEPTIONS`` environment variable
