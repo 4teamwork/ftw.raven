@@ -36,20 +36,7 @@ class FunctionalTestCase(TestCase):
             if login_as:
                 browser.login(login_as)
 
-            self.disable_handle_errors(browser)
-            try:
-                browser.open(view=view, data=data)
-            except:
-                pass
-
-    def disable_handle_errors(self, browser):
-        """If the testbrowser tells zope to not handle errors, as it does
-        by default, the exception handling is not triggered, thus no errors
-        are reported to sentry.
-        In order to be able to test the reporting, we therefore need to
-        enable error handling by removing the header.
-        """
-        header = ('X-zope-handle-errors', 'False')
-        mechbrowser = browser.get_mechbrowser()
-        if header in mechbrowser.addheaders:
-            mechbrowser.addheaders.remove(header)
+            # We trigger errors on purpose here, so the testbrowser
+            # should not raise on failed http requests.
+            browser.raise_http_errors = False
+            browser.open(view=view, data=data)
