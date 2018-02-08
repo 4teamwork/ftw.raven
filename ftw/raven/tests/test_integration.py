@@ -20,6 +20,13 @@ class TestIntegration(FunctionalTestCase):
     def test_request_infos(self):
         call = self.make_error_and_get_capture_call(data={'foo': '3'})
         self.maxDiff = None
+
+        expected = call['data']['request']
+
+        # "X-Theme-Enabled" is available on Plone 5 but not on Plone 4.
+        # It's irrelevant for our test so we can remove it.
+        expected['headers'].pop('X-Theme-Enabled', None)
+
         self.assertEquals(
             {'cookies': {},
              'url': 'http://nohost/plone/make_key_error',
@@ -37,7 +44,7 @@ class TestIntegration(FunctionalTestCase):
              'query_string': '',
              'data': {'foo': '3'},
              'method': 'POST'},
-            call['data']['request'])
+            expected)
 
     def test_user_infos_as_anonymous(self):
         call = self.make_error_and_get_capture_call()
