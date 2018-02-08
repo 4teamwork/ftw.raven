@@ -1,26 +1,20 @@
 from App.ZApplication import ZApplicationWrapper
 from ftw.raven.reporter import maybe_report_exception
-from plone.app.linkintegrity import monkey
-from plone.app.linkintegrity.monkey import zpublisher_exception_hook_wrapper
 from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
 from ZODB.POSException import ConflictError
 from ZPublisher.Publish import Retry
+from Zope2.App.startup import ZPublisherExceptionHook
 import re
 import sys
 
 
-def zpublisher_exception_hook_wrapper_wrapper(published, REQUEST,
-                                              t, v, traceback):
-    """Wrapper around linkintegrity's wrapper around zopes exception hook.
-    This allows us to hook into the exception handling for
-    reporting exceptions.
-    """
+def exception_hook_wrapper(self, published, REQUEST, t, v, traceback):
     report_exception = True
     args = [published, REQUEST, t, v, traceback]
 
     try:
         try:
-            return zpublisher_exception_hook_wrapper(*args)
+            return self.__ori_call__(*args)
 
         except Retry:
             # There was probably a conflict, resulting in a Retry
@@ -77,8 +71,8 @@ def SiteErrorLog_raising_wrapper(self, info):
 
 
 def install_patches():
-    monkey.zpublisher_exception_hook_wrapper = (
-        zpublisher_exception_hook_wrapper_wrapper)
+    ZPublisherExceptionHook.__ori_call__ = ZPublisherExceptionHook.__call__
+    ZPublisherExceptionHook.__call__ = exception_hook_wrapper
     ZApplicationWrapper.__repr__ = ZApplicationWrapper__repr__
     if SiteErrorLog.raising != SiteErrorLog_raising_wrapper:
         SiteErrorLog.raising_original = SiteErrorLog.raising
