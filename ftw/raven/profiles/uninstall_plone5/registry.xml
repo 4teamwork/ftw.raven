@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<registry>
+  <records prefix="plone.resources/ftw-raven-config"
+           interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="True" />
+  <records prefix="plone.resources/ftw-raven"
+           interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="True" />
+  <records prefix="plone.bundles/raven"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry' remove="True" />
+</registry>
