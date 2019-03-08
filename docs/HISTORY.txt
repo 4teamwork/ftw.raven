@@ -7,6 +7,8 @@ Changelog
 
 - Add support for Plone 5. [mbaechtold, jone]
 
+- Move raven ressources to plone bundle. [mathias.leimgruber]
+
 
 1.2.0 (2017-03-15)
 ------------------

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<registry>
+  <records prefix="plone.resources/ftw-raven-config"
+           interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="js">ftw.raven-config.js</value>
+  </records>
+  <records prefix="plone.resources/ftw-raven"
+           interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="js">ftw.raven.js</value>
+  </records>
+
+  <records prefix="plone.bundles/raven"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+    <value key="resources" purge="False">
+      <element>ftw-raven-config</element>
+      <element>ftw-raven</element>
+    </value>
+    <value key="jscompilation">++plone++ftw.raven/raven-compiled.min.js</value>
+    <value key="merge_with">default</value>
+    <value key="depends">plone</value>
+    <value key="compile">False</value>
+  </records>
+
+</registry>

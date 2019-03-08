@@ -1,9 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
+    xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="ftw.raven">
 
     <five:registerPackage package="." initialize=".initialize" />
@@ -11,10 +13,24 @@
     <include package=".browser" />
     <include package="ftw.upgrade" file="meta.zcml" />
 
+    <include package="plone.resource" file="meta.zcml"/>
+    <plone:static directory="browser/resources" name="ftw.raven" type="plone"/>
+
+
     <genericsetup:registerProfile
+        zcml:condition="not-have plone-5"
         name="default"
         title="ftw.raven"
         directory="profiles/default"
+        description="Report JavaScript errors to sentry with raven."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="have plone-5"
+        name="default"
+        title="ftw.raven"
+        directory="profiles/default_plone5"
         description="Report JavaScript errors to sentry with raven."
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
@@ -25,11 +41,22 @@
         />
 
     <genericsetup:registerProfile
+        zcml:condition="not-have plone-5"
         name="uninstall"
         title="Uninstall ftw.raven"
         directory="profiles/uninstall"
         provides="Products.GenericSetup.interfaces.EXTENSION"
         for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
         />
+
+    <genericsetup:registerProfile
+        zcml:condition="have plone-5"
+        name="uninstall"
+        title="Uninstall ftw.raven"
+        directory="profiles/uninstall_plone5"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        />
+
 
 </configure>
