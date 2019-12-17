@@ -37,6 +37,9 @@ You can test your configuration by visiting the view ``raven-test`` on
 any context as ``Manager``-user.
 This will trigger an exception which should appear in your sentry project.
 
+Note that it's possible that the trigger doesn't work on local test systems in
+some cases.
+
 In JavaScript you can call the function ``raven_test()`` in your javascript
 console, which will also trigger an exception.
 
