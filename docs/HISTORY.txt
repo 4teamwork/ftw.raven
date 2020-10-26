@@ -5,7 +5,7 @@ Changelog
 1.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Support ``threaded+requests+https`` dsn scheme in JS [Nachtalb]
 
 
 1.3.0 (2019-03-08)

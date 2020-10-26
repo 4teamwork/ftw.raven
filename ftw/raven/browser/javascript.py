@@ -41,7 +41,7 @@ class RavenUserConfiguration(BrowserView):
 
     def _get_dsn_without_private_key(self):
         dsn = get_raven_config().dsn
-        return re.sub(r'(://[^:]*):[^@]*(@)', '\g<1>\g<2>', dsn)
+        return re.sub(r'(threaded\+requests\+)?([^:]*://[^:]*):[^@]*(@)', '\g<2>\g<3>', dsn)
 
 
 class RavenJavaScript(BrowserView):
